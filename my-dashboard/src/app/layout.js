@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+import "./globals.css";
 
 export const metadata = {
   title: "Dashboard",

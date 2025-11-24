@@ -1,18 +1,23 @@
+"use client";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function HomePage() {
   return (
-    <div style={{ padding: 40 }}>
+    <div className="container">
       <h1>Welcome to the Dashboard</h1>
 
       <SignedOut>
         <p>Please sign in to access agencies and contacts.</p>
-        <SignInButton mode="modal">
-          <button style={{ marginRight: 10 }}>Sign In</button>
-        </SignInButton>
-        <SignUpButton mode="modal">
-          <button>Sign Up</button>
-        </SignUpButton>
+
+        <div className="btn-group">
+          <SignInButton mode="modal">
+            <button className="btn">Sign In</button>
+          </SignInButton>
+
+          <SignUpButton mode="modal">
+            <button className="btn">Sign Up</button>
+          </SignUpButton>
+        </div>
       </SignedOut>
 
       <SignedIn>
@@ -25,3 +30,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+

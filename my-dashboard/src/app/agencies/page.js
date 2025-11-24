@@ -8,19 +8,29 @@ export default function AgenciesPage() {
   const [agencies, setAgencies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // pagination
+  const [page, setPage] = useState(1);
+  const pageSize = 20; // show 20 agencies per page
+
   useEffect(() => {
     async function loadAgencies() {
-      const { data } = await supabaseBrowser
+      const { data, error } = await supabaseBrowser
         .from("agencies")
         .select("*")
         .order("name", { ascending: true });
 
-      setAgencies(data || []);
+      if (!error) {
+        setAgencies(data);
+      }
       setLoading(false);
     }
-
     loadAgencies();
   }, []);
+
+  const totalPages = Math.ceil(agencies.length / pageSize);
+  const pageData = agencies.slice((page - 1) * pageSize, page * pageSize);
+
+  if (loading) return <p>Loading agencies...</p>;
 
   return (
     <>
@@ -29,31 +39,51 @@ export default function AgenciesPage() {
       </SignedOut>
 
       <SignedIn>
-        {loading ? (
-          <p>Loading agencies...</p>
-        ) : (
-          <div style={{ padding: "20px" }}>
-            <h1>Agencies</h1>
-            <table border="1" cellPadding="8" style={{ marginTop: "20px" }}>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>City</th>
-                  <th>Address</th>
+        <div className="container">
+          <h1>Agencies</h1>
+
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pageData.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.name}</td>
+                  <td>{a.city}</td>
+                  <td>{a.address}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {agencies.map((agency) => (
-                  <tr key={agency.id}>
-                    <td>{agency.name}</td>
-                    <td>{agency.city}</td>
-                    <td>{agency.address}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination buttons */}
+          <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+            <button
+              className="btn"
+              disabled={page <= 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </button>
+
+            <span>
+              Page {page} of {totalPages}
+            </span>
+
+            <button
+              className="btn"
+              disabled={page >= totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </button>
           </div>
-        )}
+        </div>
       </SignedIn>
     </>
   );

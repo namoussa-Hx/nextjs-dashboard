@@ -5,17 +5,23 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
 import { SignedIn, SignedOut, RedirectToSignIn, useUser } from "@clerk/nextjs";
 
 export default function ContactsPage() {
+  const { user } = useUser();
+
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limitExceeded, setLimitExceeded] = useState(false);
 
-  const { user } = useUser();
+  // pagination
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
 
   useEffect(() => {
-    async function checkLimitAndLoad() {
+    async function load() {
+      if (!user) return;
+
       const today = new Date().toISOString().split("T")[0];
 
-      // 1️⃣ Check view log first
+      // Load today's view log
       const { data: log } = await supabaseBrowser
         .from("view_logs")
         .select("*")
@@ -23,14 +29,19 @@ export default function ContactsPage() {
         .eq("date", today)
         .single();
 
-      if (log && log.contacts_viewed >= 50) {
+      const alreadyViewed = log?.contacts_viewed || 0;
+
+      // If user already viewed 50 today → block immediately
+      if (alreadyViewed >= 50) {
         setLimitExceeded(true);
         setLoading(false);
         return;
       }
 
-      // 2️⃣ Load contacts
-      const { data, error } = await supabaseBrowser
+      // Fetch only what the user is allowed to see
+      const remaining = 50 - alreadyViewed;
+
+      const { data } = await supabaseBrowser
         .from("contacts")
         .select(`
           id,
@@ -41,28 +52,23 @@ export default function ContactsPage() {
           role,
           agencies(name, city)
         `)
-        .order("first_name");
+        .order("first_name")
+        .limit(remaining); // ← IMPORTANT!
 
-      if (error) {
-        console.error(error);
-        setLoading(false);
-        return;
-      }
+      setContacts(data || []);
 
-      setContacts(data);
-
-      // 3️⃣ Update the view log
+      // Update view log
       if (!log) {
         await supabaseBrowser.from("view_logs").insert({
           user_id: user.id,
           date: today,
-          contacts_viewed: data.length, // count views now
+          contacts_viewed: data.length,
         });
       } else {
         await supabaseBrowser
           .from("view_logs")
           .update({
-            contacts_viewed: log.contacts_viewed + data.length,
+            contacts_viewed: alreadyViewed + data.length,
           })
           .eq("id", log.id);
       }
@@ -70,8 +76,14 @@ export default function ContactsPage() {
       setLoading(false);
     }
 
-    if (user) checkLimitAndLoad();
+    load();
   }, [user]);
+
+
+  // PAGINATION (works only on allowed contacts)
+  const totalPages = Math.ceil(contacts.length / pageSize);
+  const pageData = contacts.slice((page - 1) * pageSize, page * pageSize);
+
 
   return (
     <>
@@ -83,17 +95,17 @@ export default function ContactsPage() {
         {loading && <p>Loading contacts...</p>}
 
         {!loading && limitExceeded && (
-          <div style={{ padding: 40 }}>
-            <h2>You reached your daily contact view limit (50)</h2>
-            <p>Upgrade your account to remove this limit.</p>
+          <div className="container">
+            <h2>You reached your daily limit of 50 contacts.</h2>
+            <p>Please upgrade to continue.</p>
           </div>
         )}
 
         {!loading && !limitExceeded && (
-          <div style={{ padding: 20 }}>
+          <div className="container">
             <h1>Contacts</h1>
 
-            <table border="1" cellPadding="8" style={{ marginTop: 20 }}>
+            <table className="table">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -105,21 +117,40 @@ export default function ContactsPage() {
               </thead>
 
               <tbody>
-                {contacts.map((c) => (
+                {pageData.map((c) => (
                   <tr key={c.id}>
                     <td>{c.first_name} {c.last_name}</td>
                     <td>{c.email}</td>
                     <td>{c.phone}</td>
                     <td>{c.role}</td>
-                    <td>
-                      {c.agencies
-                        ? `${c.agencies.name} (${c.agencies.city})`
-                        : "—"}
-                    </td>
+                    <td>{c.agencies?.name} ({c.agencies?.city})</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+
+            {/* Pagination UI */}
+            <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+              <button
+                className="btn"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                Previous
+              </button>
+
+              <span>
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                className="btn"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </SignedIn>
