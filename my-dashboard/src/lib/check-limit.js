@@ -19,7 +19,7 @@ export async function checkDailyLimit() {
     return { allowed: false, count: 0 };
   }
 
-  // No record yet → user has 0 views today
+  // No record yet => user has 0 views today
   if (!data) {
     return { allowed: true, count: 0 };
   }

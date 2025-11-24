@@ -1,7 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
 export default clerkMiddleware({
-  // optional: allow public paths
+  // allow public paths
   publicRoutes: ["/", "/sign-in(.*)", "/sign-up(.*)"],
 });
 

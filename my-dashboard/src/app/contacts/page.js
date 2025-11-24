@@ -31,7 +31,7 @@ export default function ContactsPage() {
 
       const alreadyViewed = log?.contacts_viewed || 0;
 
-      // If user already viewed 50 today → block immediately
+      // If user already viewed 50 today => block immediately
       if (alreadyViewed >= 50) {
         setLimitExceeded(true);
         setLoading(false);
@@ -53,7 +53,7 @@ export default function ContactsPage() {
           agencies(name, city)
         `)
         .order("first_name")
-        .limit(remaining); // ← IMPORTANT!
+        .limit(remaining);
 
       setContacts(data || []);
 
