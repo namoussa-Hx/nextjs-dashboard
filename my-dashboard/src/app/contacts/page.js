@@ -27,7 +27,7 @@ export default function ContactsPage() {
         .select("*")
         .eq("user_id", user.id)
         .eq("date", today)
-        .single();
+        .maybeSingle();
 
       const alreadyViewed = log?.contacts_viewed || 0;
 
@@ -53,22 +53,23 @@ export default function ContactsPage() {
           agencies(name, city)
         `)
         .order("first_name")
-        .limit(remaining); 
+        .limit(remaining);
 
-      setContacts(data || []);
+      const fetchedContacts = data || [];
+      setContacts(fetchedContacts);
 
-      // Update view log
+      // Update view log (only increase by newly viewed count)
       if (!log) {
         await supabaseBrowser.from("view_logs").insert({
           user_id: user.id,
           date: today,
-          contacts_viewed: data.length,
+          contacts_viewed: fetchedContacts.length,
         });
       } else {
         await supabaseBrowser
           .from("view_logs")
           .update({
-            contacts_viewed: alreadyViewed + data.length,
+            contacts_viewed: alreadyViewed + fetchedContacts.length,
           })
           .eq("id", log.id);
       }
@@ -79,11 +80,19 @@ export default function ContactsPage() {
     load();
   }, [user]);
 
-
   // PAGINATION (works only on allowed contacts)
   const totalPages = Math.ceil(contacts.length / pageSize);
   const pageData = contacts.slice((page - 1) * pageSize, page * pageSize);
 
+  // Handle Next click (custom for the limit message)
+  const handleNext = () => {
+    // If user tries to go beyond the last page => show limit message instantly
+    if (page >= totalPages) {
+      setLimitExceeded(true);
+      return;
+    }
+    setPage(page + 1);
+  };
 
   return (
     <>
@@ -94,6 +103,7 @@ export default function ContactsPage() {
       <SignedIn>
         {loading && <p>Loading contacts...</p>}
 
+        {/* Limit Exceeded Page */}
         {!loading && limitExceeded && (
           <div className="container">
             <h2>You reached your daily limit of 50 contacts.</h2>
@@ -101,6 +111,7 @@ export default function ContactsPage() {
           </div>
         )}
 
+        {/* Normal Display */}
         {!loading && !limitExceeded && (
           <div className="container">
             <h1>Contacts</h1>
@@ -145,8 +156,7 @@ export default function ContactsPage() {
 
               <button
                 className="btn"
-                disabled={page >= totalPages}
-                onClick={() => setPage(page + 1)}
+                onClick={handleNext}
               >
                 Next
               </button>
