@@ -8,13 +8,14 @@ export default function ContactsPage() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limitExceeded, setLimitExceeded] = useState(false);
+
   const { user } = useUser();
 
   useEffect(() => {
     async function checkLimitAndLoad() {
       const today = new Date().toISOString().split("T")[0];
 
-      // Check limit
+      // 1️⃣ Check view log first
       const { data: log } = await supabaseBrowser
         .from("view_logs")
         .select("*")
@@ -22,14 +23,13 @@ export default function ContactsPage() {
         .eq("date", today)
         .single();
 
-      // If log exists AND >= 50 → STOP
       if (log && log.contacts_viewed >= 50) {
         setLimitExceeded(true);
         setLoading(false);
         return;
       }
 
-      // Otherwise load contacts ❤️
+      // 2️⃣ Load contacts
       const { data, error } = await supabaseBrowser
         .from("contacts")
         .select(`
@@ -40,26 +40,31 @@ export default function ContactsPage() {
           phone,
           role,
           agencies(name, city)
-        `);
+        `)
+        .order("first_name");
 
-      if (!error) {
-        setContacts(data);
+      if (error) {
+        console.error(error);
+        setLoading(false);
+        return;
+      }
 
-        // Update log
-        if (!log) {
-          await supabaseBrowser.from("view_logs").insert({
-            user_id: user.id,
-            date: today,
-            contacts_viewed: data.length,
-          });
-        } else {
-          await supabaseBrowser
-            .from("view_logs")
-            .update({
-              contacts_viewed: log.contacts_viewed + data.length,
-            })
-            .eq("id", log.id);
-        }
+      setContacts(data);
+
+      // 3️⃣ Update the view log
+      if (!log) {
+        await supabaseBrowser.from("view_logs").insert({
+          user_id: user.id,
+          date: today,
+          contacts_viewed: data.length, // count views now
+        });
+      } else {
+        await supabaseBrowser
+          .from("view_logs")
+          .update({
+            contacts_viewed: log.contacts_viewed + data.length,
+          })
+          .eq("id", log.id);
       }
 
       setLoading(false);
@@ -85,9 +90,10 @@ export default function ContactsPage() {
         )}
 
         {!loading && !limitExceeded && (
-          <div style={{ padding: "20px" }}>
+          <div style={{ padding: 20 }}>
             <h1>Contacts</h1>
-            <table border="1" cellPadding="8" style={{ marginTop: "20px" }}>
+
+            <table border="1" cellPadding="8" style={{ marginTop: 20 }}>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -97,6 +103,7 @@ export default function ContactsPage() {
                   <th>Agency</th>
                 </tr>
               </thead>
+
               <tbody>
                 {contacts.map((c) => (
                   <tr key={c.id}>
@@ -104,7 +111,11 @@ export default function ContactsPage() {
                     <td>{c.email}</td>
                     <td>{c.phone}</td>
                     <td>{c.role}</td>
-                    <td>{c.agencies ? `${c.agencies.name} (${c.agencies.city})` : "—"}</td>
+                    <td>
+                      {c.agencies
+                        ? `${c.agencies.name} (${c.agencies.city})`
+                        : "—"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
