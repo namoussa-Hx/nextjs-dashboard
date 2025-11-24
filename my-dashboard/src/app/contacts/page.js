@@ -22,7 +22,7 @@ export default function ContactsPage() {
 
       const today = new Date().toISOString().split("T")[0];
 
-      // Load today's view logs
+      // Get view_logs
       const { data: log } = await supabaseBrowser
         .from("view_logs")
         .select("*")
@@ -32,33 +32,34 @@ export default function ContactsPage() {
 
       const alreadyViewed = log?.contacts_viewed || 0;
 
-      // If user already consumed 50/day
+      // ✔ If user already reached 50, block immediately
       if (alreadyViewed >= 50) {
         setLimitExceeded(true);
         setLoading(false);
         return;
       }
 
-      // How many contacts can this user still view today?
       const remaining = 50 - alreadyViewed;
 
-      // Pagination boundaries
+      // Pagination slices
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
 
-      // But limit cannot exceed the remaining allowed
+      // Max index the user is allowed to see today (0–49)
       const maxIndexAllowed = alreadyViewed + remaining - 1;
-      const effectiveTo = Math.min(to, maxIndexAllowed);
 
-      // If effectiveTo < from => no more pages
-      if (effectiveTo < from) {
+      // ✔ User tries to go beyond last allowed page
+      if (from > maxIndexAllowed) {
         setContacts([]);
         setLimitExceeded(true);
         setLoading(false);
         return;
       }
 
-      // Fetch page slice from Supabase
+      // Cap the end index at remaining
+      const effectiveTo = Math.min(to, maxIndexAllowed);
+
+      // Fetch actual slice
       const { data, error } = await supabaseBrowser
         .from("contacts")
         .select(`
@@ -82,16 +83,17 @@ export default function ContactsPage() {
 
       setContacts(data || []);
 
-      // Number of items user actually viewed this page
-      const newlyViewed = data.length;
+      const newlyViewed = data.length; // number of newly viewed items
 
-      // Update view logs
+      // Update view_logs
       if (!log) {
-        await supabaseBrowser.from("view_logs").insert({
-          user_id: user.id,
-          date: today,
-          contacts_viewed: newlyViewed,
-        });
+        await supabaseBrowser
+          .from("view_logs")
+          .insert({
+            user_id: user.id,
+            date: today,
+            contacts_viewed: newlyViewed,
+          });
       } else {
         await supabaseBrowser
           .from("view_logs")
@@ -101,7 +103,7 @@ export default function ContactsPage() {
           .eq("id", log.id);
       }
 
-      // Calculate real max pages based on remaining
+      // Calculate total pages the user can visit
       setMaxPages(Math.ceil(remaining / pageSize));
 
       setLoading(false);
@@ -119,13 +121,15 @@ export default function ContactsPage() {
       <SignedIn>
         {loading && <p>Loading contacts...</p>}
 
+        {/* Limit Exceeded Page */}
         {!loading && limitExceeded && (
           <div className="container">
             <h2>You have reached your daily limit of 50 contacts.</h2>
-            <p>Come back tomorrow to view more!</p>
+            <p>Please come back tomorrow.</p>
           </div>
         )}
 
+        {/* Normal Display */}
         {!loading && !limitExceeded && (
           <div className="container">
             <h1>Contacts</h1>
@@ -155,29 +159,27 @@ export default function ContactsPage() {
             </table>
 
             {/* Pagination */}
-            {contacts.length > 0 && (
-              <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-                <button
-                  className="btn"
-                  disabled={page <= 1}
-                  onClick={() => setPage(page - 1)}
-                >
-                  Previous
-                </button>
+            <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+              <button
+                className="btn"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                Previous
+              </button>
 
-                <span>
-                  Page {page} of {maxPages}
-                </span>
+              <span>
+                Page {page} of {maxPages}
+              </span>
 
-                <button
-                  className="btn"
-                  disabled={page >= maxPages}
-                  onClick={() => setPage(page + 1)}
-                >
-                  Next
-                </button>
-              </div>
-            )}
+              <button
+                className="btn"
+                disabled={page >= maxPages}
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </SignedIn>
