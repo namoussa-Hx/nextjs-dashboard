@@ -11,10 +11,9 @@ export default function ContactsPage() {
   const [loading, setLoading] = useState(true);
   const [limitExceeded, setLimitExceeded] = useState(false);
 
-  // Pagination
-  const pageSize = 20;
+  // pagination
   const [page, setPage] = useState(1);
-  const [maxPages, setMaxPages] = useState(1);
+  const pageSize = 20;
 
   useEffect(() => {
     async function load() {
@@ -22,45 +21,27 @@ export default function ContactsPage() {
 
       const today = new Date().toISOString().split("T")[0];
 
-      // Get view_logs
+      // Load today's view log
       const { data: log } = await supabaseBrowser
         .from("view_logs")
         .select("*")
         .eq("user_id", user.id)
         .eq("date", today)
-        .maybeSingle();
+        .single();
 
       const alreadyViewed = log?.contacts_viewed || 0;
 
-      // ✔ If user already reached 50, block immediately
+      // If user already viewed 50 today => block immediately
       if (alreadyViewed >= 50) {
         setLimitExceeded(true);
         setLoading(false);
         return;
       }
 
+      // Fetch only what the user is allowed to see
       const remaining = 50 - alreadyViewed;
 
-      // Pagination slices
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
-
-      // Max index the user is allowed to see today (0–49)
-      const maxIndexAllowed = alreadyViewed + remaining - 1;
-
-      // ✔ User tries to go beyond last allowed page
-      if (from > maxIndexAllowed) {
-        setContacts([]);
-        setLimitExceeded(true);
-        setLoading(false);
-        return;
-      }
-
-      // Cap the end index at remaining
-      const effectiveTo = Math.min(to, maxIndexAllowed);
-
-      // Fetch actual slice
-      const { data, error } = await supabaseBrowser
+      const { data } = await supabaseBrowser
         .from("contacts")
         .select(`
           id,
@@ -72,45 +53,37 @@ export default function ContactsPage() {
           agencies(name, city)
         `)
         .order("first_name")
-        .range(from, effectiveTo);
-
-      if (error) {
-        console.error("Supabase error:", error);
-        setContacts([]);
-        setLoading(false);
-        return;
-      }
+        .limit(remaining); 
 
       setContacts(data || []);
 
-      const newlyViewed = data.length; // number of newly viewed items
-
-      // Update view_logs
+      // Update view log
       if (!log) {
-        await supabaseBrowser
-          .from("view_logs")
-          .insert({
-            user_id: user.id,
-            date: today,
-            contacts_viewed: newlyViewed,
-          });
+        await supabaseBrowser.from("view_logs").insert({
+          user_id: user.id,
+          date: today,
+          contacts_viewed: data.length,
+        });
       } else {
         await supabaseBrowser
           .from("view_logs")
           .update({
-            contacts_viewed: alreadyViewed + newlyViewed,
+            contacts_viewed: alreadyViewed + data.length,
           })
           .eq("id", log.id);
       }
-
-      // Calculate total pages the user can visit
-      setMaxPages(Math.ceil(remaining / pageSize));
 
       setLoading(false);
     }
 
     load();
-  }, [user, page]);
+  }, [user]);
+
+
+  // PAGINATION (works only on allowed contacts)
+  const totalPages = Math.ceil(contacts.length / pageSize);
+  const pageData = contacts.slice((page - 1) * pageSize, page * pageSize);
+
 
   return (
     <>
@@ -121,15 +94,13 @@ export default function ContactsPage() {
       <SignedIn>
         {loading && <p>Loading contacts...</p>}
 
-        {/* Limit Exceeded Page */}
         {!loading && limitExceeded && (
           <div className="container">
-            <h2>You have reached your daily limit of 50 contacts.</h2>
-            <p>Please come back tomorrow.</p>
+            <h2>You reached your daily limit of 50 contacts.</h2>
+            <p>Please upgrade to continue.</p>
           </div>
         )}
 
-        {/* Normal Display */}
         {!loading && !limitExceeded && (
           <div className="container">
             <h1>Contacts</h1>
@@ -146,7 +117,7 @@ export default function ContactsPage() {
               </thead>
 
               <tbody>
-                {contacts.map((c) => (
+                {pageData.map((c) => (
                   <tr key={c.id}>
                     <td>{c.first_name} {c.last_name}</td>
                     <td>{c.email}</td>
@@ -158,7 +129,7 @@ export default function ContactsPage() {
               </tbody>
             </table>
 
-            {/* Pagination */}
+            {/* Pagination UI */}
             <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
               <button
                 className="btn"
@@ -169,12 +140,12 @@ export default function ContactsPage() {
               </button>
 
               <span>
-                Page {page} of {maxPages}
+                Page {page} of {totalPages}
               </span>
 
               <button
                 className="btn"
-                disabled={page >= maxPages}
+                disabled={page >= totalPages}
                 onClick={() => setPage(page + 1)}
               >
                 Next
