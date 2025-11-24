@@ -1,17 +1,23 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  title: "Dashboard App",
-  description: "Agencies + Contacts Dashboard",
+  title: "Dashboard",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
-        <ClerkProvider>{children}</ClerkProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body>
+          <Navbar /> 
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
+
+
+
 
