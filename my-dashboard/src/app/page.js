@@ -12,28 +12,6 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <>
-      {/* NAVBAR */}
-      <nav className="navbar">
-        <div className="nav-left">
-          <span className="logo">NEXTJS-DASHBOARD</span>
-
-          <Link href="/agencies" className="nav-link">Agencies</Link>
-          <Link href="/contacts" className="nav-link">Contacts</Link>
-        </div>
-
-        <div className="nav-right">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="nav-btn">Sign In</button>
-            </SignInButton>
-          </SignedOut>
-
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </div>
-      </nav>
-
       {/* MAIN SECTION */}
       <div className="center-wrapper">
         <div className="card">
