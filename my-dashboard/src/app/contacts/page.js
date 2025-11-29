@@ -108,11 +108,11 @@ export default function ContactsPage() {
               <table className="table-contact">
                 <thead>
                   <tr>
-                    <th>Name</th>
+                    <th style={{ borderRadius: "8px 0px 0px 8px" }}>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
                      <th>Role</th>
-                    <th>Agency</th> 
+                    <th style={{ borderRadius: "0px 8px 8px 0px" }}>Agency</th> 
                   </tr>
                 </thead>
 

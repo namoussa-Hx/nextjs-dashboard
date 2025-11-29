@@ -219,6 +219,8 @@ body {
   box-shadow: 0 4px 14px rgba(0,0,0,0.08);
   overflow-x: hidden;
   overflow-y: visible;
+  padding:4px;
+  
 }
 
 .table-contact {
@@ -229,18 +231,18 @@ body {
 
 .table-contact th,
 .table-contact td {
-  padding: 8px 10px;
+  padding: 10px 12px;
   text-align: left;
   border-top: 1px solid #eee;
-  white-space: normal;
-  word-break: break-word;
 }
 
 .table-contact th {
-  background: #f0f2f8;
+  background: #ede5ff;
   font-weight: 600;
 }
-
+.table-contact th + th {
+  border-left: 2px solid white;
+}
 .table-contact tr:hover td {
   background: #fafaff;
 }
