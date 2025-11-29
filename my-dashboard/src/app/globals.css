@@ -270,7 +270,7 @@ body {
 }
 
 .page-btn:hover .icon-arrow {
-  fill: #555;
+  fill: white;
 }
 .page-btn:hover {
   background: #7b59d3 ;
