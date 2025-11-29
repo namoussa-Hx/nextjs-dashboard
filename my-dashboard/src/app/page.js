@@ -22,7 +22,7 @@ export default function HomePage() {
           <div className="card">
             <div className="brand" aria-hidden>
                 <svg
-                className="brand-icon"
+                className="brand-icon-home"
                 width="36"
                 height="36"
                 viewBox="0 0 24 24"

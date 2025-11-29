@@ -45,9 +45,9 @@ export default function AgenciesPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
+                <th style={{ borderRadius: "8px 0px 0px 8px" }}>Name</th>
                 <th>City</th>
-                <th>Address</th>
+                <th style={{ borderRadius: "0px 8px 8px 0px" }}>Address</th>
               </tr>
             </thead>
             <tbody>
