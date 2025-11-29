@@ -100,19 +100,19 @@ export default function ContactsPage() {
         )}
 
         {!loading && !limitExceeded && (
-          <div className="container">
+          <div className="container-contact">
             <h1>Contacts</h1>
 
             {/* FIX: WRAP TABLE */}
-            <div className="table-wrapper">
-              <table className="table">
+            <div className="table-wrapper-contact">
+              <table className="table-contact">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Role</th>
-                    <th>Agency</th>
+                     <th>Role</th>
+                    <th>Agency</th> 
                   </tr>
                 </thead>
 

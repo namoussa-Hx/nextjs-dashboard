@@ -6,11 +6,10 @@
   box-sizing: border-box;
 }
 
-/* ---------- GLOBAL PAGE SETTINGS (NO SCROLL) ---------- */
-/* html, body {
+html, body {
   height: 100%;
-  overflow: hidden; 
-} */
+  overflow: hidden;
+}
 
 body {
   font-family: Arial, sans-serif;
@@ -18,7 +17,6 @@ body {
   color: #222;
 }
 
-/* ---------- WELCOME PAGE CENTER ---------- */
 .center-wrapper {
   height: calc(100vh - 70px);
   display: flex;
@@ -27,7 +25,6 @@ body {
   padding: 0 20px;
 }
 
-/* ---------- CARD ---------- */
 .card {
   background: white;
   padding: 40px 50px;
@@ -39,7 +36,6 @@ body {
   animation: fadeIn 0.4s ease;
 }
 
-/* ---------- BRAND ---------- */
 .brand {
   display: flex;
   justify-content: center;
@@ -55,11 +51,10 @@ body {
 .title {
   font-size: 28px;
   font-weight: bold;
-  color: #090909; 
+  color: #090909;
   margin-bottom: 12px;
 }
 
-/* ---------- BUTTONS ---------- */
 .btn {
   padding: 10px 20px;
   border-radius: 6px;
@@ -74,7 +69,6 @@ body {
   color: white;
 }
 
-/* ---------- CLERK BUTTON ---------- */
 .clerk-btn {
   display: inline-flex;
   align-items: center;
@@ -96,7 +90,6 @@ body {
   flex-shrink: 0;
 }
 
-/* ---------- NAVBAR ---------- */
 .navbar {
   height: 70px;
   display: flex;
@@ -157,28 +150,27 @@ body {
   color: #fff;
 }
 
-/* ---------- TABLES (CENTERED + SMALL) ---------- */
-.container {
-  height: calc(100vh - 70px);  /* exclude navbar height */
+.container,
+.container-contact {
+  height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
-  justify-content: center;     /* vertically centered */
-  align-items: center;         /* horizontally centered */
-  text-align: center;
+  justify-content: center;
+  align-items: center;
   padding: 0 20px;
-  overflow-y: auto;
+  text-align: center;
 }
 
-.container h1 {
+.container h1,
+.container-contact h1 {
   margin-bottom: 18px;
   font-size: 26px;
   font-weight: 700;
   color: #0b3b66;
 }
 
-/* Smaller responsive table */
 .table {
-  width: 70%; /* <<< MAKE TABLE SMALLER */
+  width: 70%;
   max-width: 700px;
   background: white;
   border-radius: 12px;
@@ -202,7 +194,41 @@ body {
   background: #fafaff;
 }
 
-/* ---------- PAGINATION (ALWAYS VISIBLE) ---------- */
+.table-wrapper-contact {
+  width: 90%;
+  max-width: 1200px;
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.table-contact {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.table-contact th,
+.table-contact td {
+  padding: 8px 10px;
+  text-align: left;
+  border-top: 1px solid #eee;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.table-contact th {
+  background: #f0f2f8;
+  font-weight: 600;
+}
+
+.table-contact tr:hover td {
+  background: #fafaff;
+}
+
 .pagination {
   margin-top: 18px;
   display: flex;
@@ -235,7 +261,6 @@ body {
   color: #333;
 }
 
-/* ---------- ANIMATION ---------- */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
