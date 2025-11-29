@@ -245,6 +245,9 @@ body {
 .table-contact th + th {
   border-left: 2px solid white;
 }
+.table-contact td + td {
+  border-left: 2px solid white;
+}
 .table-contact tr:hover td {
   background: #fafaff;
 }
