@@ -61,28 +61,29 @@ export default function AgenciesPage() {
             </tbody>
           </table>
 
-          {/* Pagination buttons */}
-          <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+        {/* Pagination */}
+          <div className="pagination">
             <button
-              className="btn"
+              className="page-btn"
               disabled={page <= 1}
               onClick={() => setPage(page - 1)}
             >
-              Previous
+              &#8592;
             </button>
 
-            <span>
+            <span className="page-info">
               Page {page} of {totalPages}
             </span>
 
             <button
-              className="btn"
+              className="page-btn"
               disabled={page >= totalPages}
               onClick={() => setPage(page + 1)}
             >
-              Next
+              &#8594;
             </button>
           </div>
+
         </div>
       </SignedIn>
     </>

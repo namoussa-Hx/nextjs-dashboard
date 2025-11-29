@@ -6,22 +6,30 @@
   box-sizing: border-box;
 }
 
+/* ---------- GLOBAL PAGE SETTINGS (NO SCROLL) ---------- */
+/* html, body {
+  height: 100%;
+  overflow: hidden; 
+} */
+
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #e8f0ff 0%, #f7f9ff 50%, #ffffff 100%);
   color: #222;
 }
 
+/* ---------- WELCOME PAGE CENTER ---------- */
 .center-wrapper {
-  min-height: 100vh;      
+  height: calc(100vh - 70px);
   display: flex;
-  justify-content: center;    
-  align-items: center;        
-  padding: 0 20px;    
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
 }
 
+/* ---------- CARD ---------- */
 .card {
-  background: rgba(255, 255, 255, 0.98);
+  background: white;
   padding: 40px 50px;
   border-radius: 12px;
   width: 100%;
@@ -31,10 +39,11 @@ body {
   animation: fadeIn 0.4s ease;
 }
 
+/* ---------- BRAND ---------- */
 .brand {
   display: flex;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .brand-icon {
@@ -50,13 +59,7 @@ body {
   margin-bottom: 12px;
 }
 
-.subtitle {
-  font-size: 15px;
-  color: #555;
-  margin-bottom: 25px;
-}
-
-
+/* ---------- BUTTONS ---------- */
 .btn {
   padding: 10px 20px;
   border-radius: 6px;
@@ -71,24 +74,14 @@ body {
   color: white;
 }
 
-.btn.primary:hover {
-  background: #222;
-}
-
-.btn-group {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-
+/* ---------- CLERK BUTTON ---------- */
 .clerk-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  margin-top: 16px;
   gap: 8px;
-  height: 42px;   
-  padding: 0 18px;         
+  height: 38px;
+  padding: 0 18px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -96,68 +89,23 @@ body {
   color: #fff;
 }
 
-
 .clerk-icon {
-  width: 26px;   
+  width: 26px;
   height: 26px;
   object-fit: contain;
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
-.clerk-btn:hover {
-  transform: translateY(-1px);
-}
-
-/* -------- TABLES (Agencies & Contacts) -------- */
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-.table th,
-.table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-
-.enter-link {
-  display: inline-block;
-  margin-top: 15px;
-  color: #7b59d3;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.enter-link:hover {
-  text-decoration: underline;
-}
-
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* ---------- NAVBAR ---------- */
 .navbar {
+  height: 70px;
   display: flex;
   align-items: center;
   padding: 12px 28px;
-  gap: 14px;
   background: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  position: sticky;
-  top: 0;
   z-index: 100;
 }
-
 
 .nav-left {
   display: flex;
@@ -165,25 +113,20 @@ body {
   gap: 10px;
 }
 
-
 .brand-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
 }
-
 
 .logo {
   font-family: "Poppins", sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: #0b3b66;
-  letter-spacing: 0.2px;
 }
-
 
 .nav-center {
   flex: 1;
@@ -192,47 +135,108 @@ body {
   gap: 14px;
 }
 
-
 .nav-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-
 .nav-link {
-  display: inline-flex;
-  align-items: center;
   padding: 8px 14px;
+  border-radius: 999px;
   font-size: 15px;
   font-weight: 600;
   color: #333;
   text-decoration: none;
-  border-radius: 999px;
-  transition: background 150ms ease, color 150ms ease, transform 120ms ease;
+  transition: background 150ms ease, color 150ms ease;
 }
 
-
-.nav-link:hover {
-  background: #7b59d3;
-  color: #fff;
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-
-
+.nav-link:hover,
 .nav-link.active {
   background: #7b59d3;
   color: #fff;
 }
 
+/* ---------- TABLES (CENTERED + SMALL) ---------- */
+.container {
+  height: calc(100vh - 70px);  /* exclude navbar height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;     /* vertically centered */
+  align-items: center;         /* horizontally centered */
+  text-align: center;
+  padding: 0 20px;
+  overflow-y: auto;
+}
 
-@media (max-width: 720px) {
-  .nav-center {
-    gap: 8px;
-  }
-  .nav-link {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
+.container h1 {
+  margin-bottom: 18px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #0b3b66;
+}
+
+/* Smaller responsive table */
+.table {
+  width: 70%; /* <<< MAKE TABLE SMALLER */
+  max-width: 700px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-top: 1px solid #eee;
+}
+
+.table th {
+  background: #f0f2f8;
+  font-weight: 600;
+}
+
+.table tr:hover td {
+  background: #fafaff;
+}
+
+/* ---------- PAGINATION (ALWAYS VISIBLE) ---------- */
+.pagination {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.page-btn {
+  width: 38px;
+  height: 38px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.page-btn:hover {
+  background: #f1f1f1;
+}
+
+.page-btn:active {
+  background: #d9d9d9;
+}
+
+.page-info {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ---------- ANIMATION ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
