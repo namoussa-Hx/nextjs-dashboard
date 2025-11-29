@@ -1,5 +1,9 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import {
+  SignedIn,
+} from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+
 import "./globals.css";
 
 export const metadata = {
@@ -11,7 +15,9 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body>
-          <Navbar /> 
+          <SignedIn>
+            <Navbar />
+          </SignedIn>
           {children}
         </body>
       </html>

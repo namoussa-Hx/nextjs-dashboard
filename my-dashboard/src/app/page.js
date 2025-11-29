@@ -1,45 +1,59 @@
 "use client";
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
-import Link from "next/link";
+import { useEffect } from "react";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  // redirect safely AFTER auth is fully loaded
+  useEffect(() => {
+    if (isSignedIn) {
+      router.replace("/agencies");  // no freeze, no loop
+    }
+  }, [isSignedIn, router]);
+
   return (
     <>
-      {/* MAIN SECTION */}
-      <div className="center-wrapper">
-        <div className="card">
-          <h1 className="title">Welcome to the Dashboard</h1>
-          <p className="subtitle">
-            Please sign in to access agencies and contacts.
-          </p>
+      <SignedOut>
+        <div className="center-wrapper">
+          <div className="card">
+            <div className="brand" aria-hidden>
+              <svg
+                className="brand-icon"
+                width="56"
+                height="56"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" />
+                <rect x="7" y="8" width="3" height="3" fill="currentColor" />
+                <rect x="14" y="8" width="3" height="3" fill="currentColor" />
+                <rect x="7" y="13" width="3" height="3" fill="currentColor" />
+                <rect x="14" y="13" width="3" height="3" fill="currentColor" />
+              </svg>
+            </div>
 
-          <SignedOut>
+            <h1 className="title">Welcome to the Dashboard</h1>
+
+            <p className="subtitle">
+              Please sign in to access agencies and contacts.
+            </p>
+
             <div className="btn-group">
               <SignInButton mode="modal">
-                <button className="btn primary">Sign In</button>
+                <button className="btn primary clerk-btn">
+                  <img src="clerk-icone.png" className="clerk-icon" />
+                  Continue with Clerk
+                </button>
               </SignInButton>
-
-              <SignUpButton mode="modal">
-                <button className="btn secondary">Sign Up</button>
-              </SignUpButton>
             </div>
-          </SignedOut>
-
-          <SignedIn>
-            <p>You are already signed in!</p>
-            <Link href="/agencies" className="enter-link">
-              Go to Agencies →
-            </Link>
-          </SignedIn>
+          </div>
         </div>
-      </div>
+      </SignedOut>
+      <SignedIn>
+      </SignedIn>
     </>
   );
 }
