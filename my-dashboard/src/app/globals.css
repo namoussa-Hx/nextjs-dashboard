@@ -233,7 +233,11 @@ body {
   margin-top: 18px;
   display: flex;
   justify-content: center;
-  gap: 14px;
+  gap: 10px;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 50px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
 .page-btn {
@@ -241,19 +245,26 @@ body {
   height: 38px;
   background: white;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 50%;
   font-size: 20px;
   cursor: pointer;
   transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-btn:hover {
-  background: #f1f1f1;
+  background: #7b59d3 ;
+}
+.page-info {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
 }
 
-.page-btn:active {
-  background: #d9d9d9;
-}
 
 .page-info {
   font-size: 15px;
@@ -264,4 +275,35 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.container-limit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: white;
+  padding: 40px 50px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+
+  width: 90%;
+  max-width: 520px;
+  text-align: center;
+
+  animation: fadeIn 0.3s ease;
+}
+
+.container-limit h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b3b66;
+  margin-bottom: 12px;
+}
+
+.container-limit p {
+  font-size: 16px;
+  color: #444;
+  margin-top: 6px;
 }

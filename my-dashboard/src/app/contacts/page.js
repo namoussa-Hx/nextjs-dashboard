@@ -93,7 +93,7 @@ export default function ContactsPage() {
         )}
 
         {!loading && limitExceeded && (
-          <div className="container">
+          <div className="container-limit">
             <h1>You reached your daily limit of 50 contacts.</h1>
             <p>Please upgrade to continue.</p>
           </div>
