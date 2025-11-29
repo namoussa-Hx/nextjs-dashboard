@@ -34,11 +34,10 @@ body {
   box-shadow: 0 4px 18px rgba(0,0,0,0.08);
   text-align: center;
   animation: fadeIn 0.4s ease;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;  
+  gap: 20px;
 }
 
 .brand {
@@ -52,20 +51,17 @@ body {
   height: 56px;
 }
 
-
 .title {
   font-size: 28px;
   font-weight: bold;
   color: #090909;
 }
 
-
 .subtitle {
   font-size: 16px;
   color: #444;
   margin-top: -10px;
 }
-
 
 .btn {
   padding: 10px 20px;
@@ -99,7 +95,6 @@ body {
   height: 26px;
   object-fit: contain;
 }
-
 
 .navbar {
   height: 70px;
@@ -145,8 +140,6 @@ body {
   color: #0b3b66;
 }
 
-
-
 .nav-link {
   padding: 8px 14px;
   border-radius: 999px;
@@ -156,7 +149,8 @@ body {
   text-decoration: none;
   transition: background 150ms ease, color 150ms ease;
 }
-.nav-link:hover{
+
+.nav-link:hover {
   background: #ede5ff;
   color: black;
 }
@@ -278,6 +272,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .page-btn.active .icon-arrow,
 .page-btn:active .icon-arrow {
   fill: white !important;
@@ -286,22 +281,17 @@ body {
 .page-btn:hover .icon-arrow {
   fill: white;
 }
+
 .page-btn:hover {
-  background: #7b59d3 ;
+  background: #7b59d3;
 }
+
 .page-info {
   font-size: 15px;
   font-weight: 600;
   color: #333;
   display: flex;
   align-items: center;
-}
-
-
-.page-info {
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
 }
 
 @keyframes fadeIn {
@@ -314,16 +304,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   background: white;
   padding: 40px 50px;
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-
   width: 90%;
   max-width: 520px;
   text-align: center;
-
   animation: fadeIn 0.3s ease;
 }
 
@@ -340,6 +327,23 @@ body {
   margin-top: 6px;
 }
 
-.icon-arrow.left {
-  transform: rotate(180deg);
+/* Responsive fix for very small screens */
+@media (max-width: 480px) {
+  .table,
+  .table-wrapper-contact {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .table-contact,
+  .table {
+    min-width: 600px;
+  }
+
+  .container,
+  .container-contact {
+    padding: 0 10px;
+  }
 }
