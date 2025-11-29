@@ -30,7 +30,7 @@ export default function AgenciesPage() {
   const totalPages = Math.ceil(agencies.length / pageSize);
   const pageData = agencies.slice((page - 1) * pageSize, page * pageSize);
 
-  if (loading) return <p>Loading agencies...</p>;
+  if (loading) return <div className="container"><h1>Loading agencies...</h1></div>;
 
   return (
     <>
